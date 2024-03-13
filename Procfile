@@ -1,2 +1,2 @@
 worker: sh target/bin/workerBot
-web:  java -jar out/artifacts/AH_Prizebot_jar/AH_Prizebot.jar tutorial.pBot
+web: java $JAVA_OPTS out/artifacts/AH_Prizebot_jar/AH_Prizebot.jar -Dserver.port=$PORT $JAR_OPTS
