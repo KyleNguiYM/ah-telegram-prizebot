@@ -65,7 +65,7 @@
                     <assembleDirectory>target</assembleDirectory>
                     <programs>
                         <program>
-                            <mainClass>pBot</mainClass>
+                            <mainClass>tutorial.pBot</mainClass>
                             <name>workerBot</name>
                         </program>
                     </programs>
