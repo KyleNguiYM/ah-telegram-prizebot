@@ -140,6 +140,15 @@ public class Bot extends TelegramLongPollingBot {
                 } catch (TelegramApiException e) {
                     throw new RuntimeException(e);
                 }
+            } else if (callbackData.equals("malay")) {
+            SendMessage response = new SendMessage();
+            response.setChatId(chatId);
+            response.setText("Anda memilih Bahasa Malaysia sebagai Bahasa");
+                try {
+                    execute(response);
+                } catch (TelegramApiException e) {
+                    throw new RuntimeException(e);
+                }
             } else if (callbackData.equals("join_giveaway")) {
                 // Perform actions when the user clicks the emoji button
                 // For example, add the user to the giveaway participants
@@ -595,10 +604,13 @@ public class Bot extends TelegramLongPollingBot {
                         List<InlineKeyboardButton> inlineKeyboardButtonList = new ArrayList<>();
                         InlineKeyboardButton inlineKeyboardButton1 = new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7\uD83C\uDDFA\uD83C\uDDF8 English");
                         InlineKeyboardButton inlineKeyboardButton2 = new InlineKeyboardButton("\uD83C\uDDE8\uD83C\uDDF3 Chinese");
+                        InlineKeyboardButton inlineKeyboardButton3 = new InlineKeyboardButton("\uD83C\uDDF2\uD83C\uDDFE Malay");
                         inlineKeyboardButton1.setCallbackData("english");
                         inlineKeyboardButton2.setCallbackData("chinese");
+                        inlineKeyboardButton3.setCallbackData("malay");
                         inlineKeyboardButtonList.add(inlineKeyboardButton1);
                         inlineKeyboardButtonList.add(inlineKeyboardButton2);
+                        inlineKeyboardButtonList.add(inlineKeyboardButton3);
                         inlineButtons.add(inlineKeyboardButtonList);
                         inlineKeyboardMarkup.setKeyboard(inlineButtons);
                         sm.setReplyMarkup(inlineKeyboardMarkup);
@@ -672,7 +684,6 @@ public class Bot extends TelegramLongPollingBot {
                                 }
                                 giveawayCreationState.put(id, GiveawayStep.SETUP_PARTICIPANTS);
                                 SendMessage sm = new SendMessage();
-                                //sm.setText("Enter your auto-raffle date in this format: 00:00, 16.01.2024 (Time, Date). You may use /skip to skip or /cancel to cancel." + "\n" + "Timezone: GMT+8 Malaysia Time");
                                 sm.setText("How many participants are needed for the auto-raffle to take place? (Use /cancel to cancel)");
                                 sm.setChatId(msg.getChatId());
                                 try {
@@ -716,7 +727,6 @@ public class Bot extends TelegramLongPollingBot {
                                     giveawayCreationState.put(chatId, GiveawayStep.SETUP_DATE);
                                     SendMessage sm = new SendMessage();
                                     sm.setText("Enter your auto-raffle date in this format: 00:00, 16.01.2024 (Time, Date). You may use /skip to skip or /cancel to cancel." + "\n" + "Timezone: GMT+8 Malaysia Time");
-                                    //sm.setText("Please upload a picture or video for the giveaway (or use /skip to skip this step)");
                                     sm.setChatId(msg.getChatId());
                                     try {
                                         execute(sm);
