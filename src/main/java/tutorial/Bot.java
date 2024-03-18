@@ -324,7 +324,7 @@ public class Bot extends TelegramLongPollingBot {
             String f_id = null;
 
             if(msg.isCommand() || msg.isUserMessage() || msg.isSuperGroupMessage()) {
-                if(update.hasMessage() && pht){
+                if(update.hasMessage() && pht && msg.isUserMessage()){
 
                     // Know file_id
                     f_id = photos.stream()
@@ -362,7 +362,7 @@ public class Bot extends TelegramLongPollingBot {
 
                     SendMessage sm = new SendMessage();
                     sm.setChatId(msg.getChatId());
-                    sm.setText("Here is your giveaway with photo: ");
+                    sm.setText("Upload successful! Here is your giveaway with photo: ");
 
                         // Set photo caption
 //                        String caption = "file_id: " + f_id + "\n" +
@@ -386,7 +386,7 @@ public class Bot extends TelegramLongPollingBot {
                             e.printStackTrace();
                         }
                     storeMedia(1L, f_id);
-                }else if (update.hasMessage() && vid) {
+                }else if (update.hasMessage() && vid && msg.isUserMessage()) {
 
                     // Get the file ID of the video
                     f_id = video.getFileId();
@@ -417,7 +417,7 @@ public class Bot extends TelegramLongPollingBot {
                     // Send the video details back to the user
                     SendMessage sm = new SendMessage();
                     sm.setChatId(msg.getChatId());
-                    sm.setText("Here is your giveaway with video:");
+                    sm.setText("Upload successful! Here is your giveaway with video:");
 
                     // Set the video caption with details
 //                    String caption = "File ID: " + fileId + "\n";
