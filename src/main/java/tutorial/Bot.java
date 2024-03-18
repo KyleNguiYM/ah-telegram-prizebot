@@ -1,4 +1,18 @@
 package tutorial;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
@@ -108,6 +122,19 @@ public class Bot extends TelegramLongPollingBot {
         return new ArrayList<>(giveawayMediaMap.entrySet());
     }
 
+    private InlineKeyboardMarkup createInlineKeyboard() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton shareButton = new InlineKeyboardButton();
+        shareButton.setText("Share My Profile");
+        shareButton.setSwitchInlineQuery("Send my profile to:");
+        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+        keyboardButtonsRow.add(shareButton);
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(keyboardButtonsRow);
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        return inlineKeyboardMarkup;
+    }
+
     List <String> giveawayMemberList = new ArrayList<>();
     @Override
     public void onUpdateReceived(Update update) {
@@ -143,7 +170,7 @@ public class Bot extends TelegramLongPollingBot {
             } else if (callbackData.equals("malay")) {
             SendMessage response = new SendMessage();
             response.setChatId(chatId);
-            response.setText("Anda memilih Bahasa Malaysia sebagai Bahasa");
+            response.setText("Anda memilih Bahasa Malaysia sebagai bahasa.");
                 try {
                     execute(response);
                 } catch (TelegramApiException e) {
@@ -253,17 +280,24 @@ public class Bot extends TelegramLongPollingBot {
                 //forwardGiveawayMessage(update);
                 var id = user.getId();
                 SendMessage sm = new SendMessage();
+                sm.setChatId(id.toString());
+                sm.setText("You've share profile");
+                sm.setReplyMarkup(createInlineKeyboard());
                 List<Map.Entry<Long, List<String>>> allData = getAllDataFromMap();
                 StringBuilder messageText = new StringBuilder("Giveaway:\n");
-                //int i = 1;
+//                int i = 1;
                 for (Map.Entry<Long, List<String>> entry : allData) {
                     String giveawayDetails = entry.getValue().get(0); // Assuming only one detail for simplicity
+
                     messageText.append(giveawayDetails).append("\n\n");
                     i++;
                 }
 
                 try {
+                    System.out.println("shared a profile");
                     execute(sm);
+//                    System.out.println(messageText);
+
                 } catch (TelegramApiException e) {
                     throw new RuntimeException(e);
                 }
@@ -777,11 +811,11 @@ public class Bot extends TelegramLongPollingBot {
                                     inlineButtons.add(actionRow);
 
                                     // Third row for share
-//                                    List<InlineKeyboardButton> shareRow = new ArrayList<>();
-//                                    InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
-//                                    shareButton.setCallbackData("share");
-//                                    shareRow.add(shareButton);
-//                                    inlineButtons.add(shareRow);
+                                    List<InlineKeyboardButton> shareRow = new ArrayList<>();
+                                    InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
+                                    shareButton.setCallbackData("share");
+                                    shareRow.add(shareButton);
+                                    inlineButtons.add(shareRow);
 
                                     int i = 1;
                                     List<InlineKeyboardButton> addRow = new ArrayList<>();
@@ -851,11 +885,11 @@ public class Bot extends TelegramLongPollingBot {
                                         inlineButtons.add(actionRow);
 
                                         // Third row for share
-//                                        List<InlineKeyboardButton> shareRow = new ArrayList<>();
-//                                        InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
-//                                        shareButton.setCallbackData("share");
-//                                        shareRow.add(shareButton);
-//                                        inlineButtons.add(shareRow);
+                                        List<InlineKeyboardButton> shareRow = new ArrayList<>();
+                                        InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
+                                        shareButton.setCallbackData("share");
+                                        shareRow.add(shareButton);
+                                        inlineButtons.add(shareRow);
 
                                         int i = 1;
                                         List<InlineKeyboardButton> addRow = new ArrayList<>();
