@@ -323,8 +323,8 @@ public class Bot extends TelegramLongPollingBot {
             Video video = msg.getVideo();
             String f_id = null;
 
-            if(msg.isCommand() || msg.isUserMessage() || msg.isSuperGroupMessage()) {
-                if(update.hasMessage() && pht && msg.isUserMessage()){
+            if(msg.isCommand() || msg.isUserMessage()){
+                if(update.hasMessage() && pht){
 
                     // Know file_id
                     f_id = photos.stream()
@@ -364,29 +364,29 @@ public class Bot extends TelegramLongPollingBot {
                     sm.setChatId(msg.getChatId());
                     sm.setText("Upload successful! Here is your giveaway with photo: ");
 
-                        // Set photo caption
+                    // Set photo caption
 //                        String caption = "file_id: " + f_id + "\n" +
 //                                "width: " + Integer.toString(f_width) + "\n" +
 //                                "height: " + Integer.toString(f_height);
-                        String caption = "Giveaways details:\n" +
-                                "Title: " + giveawayTitleMap.get(id) + "\n" +
-                                "Description: " + giveawayDescriptionMap.get(id) + "\n" +
-                                "Date: " + giveawayDateMap.get(id) + "\n\n" +
-                                "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
-                                "Conditions: " + giveawayConditionMap.get(id) + "\n" ;
-                        SendPhoto pmsg = new SendPhoto();
-                        pmsg.setChatId(chatId);
-                        pmsg.setPhoto(new InputFile(f_id));
-                        pmsg.setCaption(caption);
-                        pmsg.setReplyMarkup(inlineKeyboardMarkup);
-                        try {
-                            execute(sm);
-                            execute(pmsg); // Call method to send the photo with caption
-                        } catch (TelegramApiException e) {
-                            e.printStackTrace();
-                        }
+                    String caption = "Giveaways details:\n" +
+                            "Title: " + giveawayTitleMap.get(id) + "\n" +
+                            "Description: " + giveawayDescriptionMap.get(id) + "\n" +
+                            "Date: " + giveawayDateMap.get(id) + "\n\n" +
+                            "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
+                            "Conditions: " + giveawayConditionMap.get(id) + "\n" ;
+                    SendPhoto pmsg = new SendPhoto();
+                    pmsg.setChatId(chatId);
+                    pmsg.setPhoto(new InputFile(f_id));
+                    pmsg.setCaption(caption);
+                    pmsg.setReplyMarkup(inlineKeyboardMarkup);
+                    try {
+                        execute(sm);
+                        execute(pmsg); // Call method to send the photo with caption
+                    } catch (TelegramApiException e) {
+                        e.printStackTrace();
+                    }
                     storeMedia(1L, f_id);
-                }else if (update.hasMessage() && vid && msg.isUserMessage()) {
+                }else if (update.hasMessage() && vid) {
 
                     // Get the file ID of the video
                     f_id = video.getFileId();
@@ -445,7 +445,8 @@ public class Bot extends TelegramLongPollingBot {
                     }
                     storeMedia(1L, f_id);
                 }
-
+            }
+            if(msg.isCommand() || msg.isUserMessage() || msg.isSuperGroupMessage()) {
 
                 switch (txt) {
                     case "/start@AH_Prizebot" :
