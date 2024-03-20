@@ -36,7 +36,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Bot extends TelegramLongPollingBot {
-
+    
+    private String giveawayMessage;
     @Override
     public String getBotUsername() {
         return "AH_Prizebot";
@@ -122,11 +123,17 @@ public class Bot extends TelegramLongPollingBot {
         return new ArrayList<>(giveawayMediaMap.entrySet());
     }
 
-    private InlineKeyboardMarkup createInlineKeyboard() {
+    private InlineKeyboardMarkup createInlineKeyboard(String id) {
+
+        SendMessage sm = new SendMessage();
+        sm.setChatId(String.valueOf(id));
+        sm.setText(giveawayMessage);
+
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton shareButton = new InlineKeyboardButton();
-        shareButton.setText("Share My Profile");
-        shareButton.setSwitchInlineQuery("Send my profile to:");
+        shareButton.setText("Share Giveaways");
+        shareButton.setSwitchInlineQuery(giveawayMessage);
+
         List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
         keyboardButtonsRow.add(shareButton);
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
@@ -134,7 +141,7 @@ public class Bot extends TelegramLongPollingBot {
         inlineKeyboardMarkup.setKeyboard(rowList);
         return inlineKeyboardMarkup;
     }
-
+    
     List <String> giveawayMemberList = new ArrayList<>();
     @Override
     public void onUpdateReceived(Update update) {
@@ -791,6 +798,12 @@ public class Bot extends TelegramLongPollingBot {
                                             "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
                                             "Conditions: " + giveawayConditionMap.get(id) + "\n" +
                                             "Raffle Now : /raffle");
+                                    giveawayMessage = "Your giveaway is created with the following details:\n" +
+                                                "Title: " + giveawayTitleMap.get(id) + "\n" +
+                                                "Description: " + giveawayDescriptionMap.get(id) + "\n" +
+                                                "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
+                                                "Conditions: " + giveawayConditionMap.get(id) + "\n" +
+                                                giveawayEmojiMap.get(id) + " - Raffle Now : /raffle";
 
                                     InlineKeyboardMarkup inlineKeyboardMarkup =  new InlineKeyboardMarkup();
                                     List<List<InlineKeyboardButton>> inlineButtons = new ArrayList<>();
@@ -814,7 +827,10 @@ public class Bot extends TelegramLongPollingBot {
                                     // Third row for share
                                     List<InlineKeyboardButton> shareRow = new ArrayList<>();
                                     InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
-                                    shareButton.setCallbackData("share");
+                                    // shareButton.setCallbackData("share");
+                                    // shareRow.add(shareButton);
+                                    // inlineButtons.add(shareRow);
+                                    shareButton.setSwitchInlineQuery(giveawayMessage);
                                     shareRow.add(shareButton);
                                     inlineButtons.add(shareRow);
 
@@ -865,6 +881,13 @@ public class Bot extends TelegramLongPollingBot {
                                                 "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
                                                 "Conditions: " + giveawayConditionMap.get(id) + "\n" +
                                                 "Raffle Now : /raffle");
+                                        giveawayMessage = "Your giveaway is created with the following details:\n" +
+                                                "Title: " + giveawayTitleMap.get(id) + "\n" +
+                                                "Description: " + giveawayDescriptionMap.get(id) + "\n" +
+                                                "Date: " + giveawayDateMap.get(id) + "\n\n" +
+                                                "Winners Count: " + giveawayWinnersMap.get(id) + "\n" +
+                                                "Conditions: " + giveawayConditionMap.get(id) + "\n" +
+                                                giveawayEmojiMap.get(id) + " - Raffle Now : /raffle";
 
                                         InlineKeyboardMarkup inlineKeyboardMarkup =  new InlineKeyboardMarkup();
                                         List<List<InlineKeyboardButton>> inlineButtons = new ArrayList<>();
@@ -888,7 +911,10 @@ public class Bot extends TelegramLongPollingBot {
                                         // Third row for share
                                         List<InlineKeyboardButton> shareRow = new ArrayList<>();
                                         InlineKeyboardButton shareButton = new InlineKeyboardButton("Share \uD83D\uDCAC");
-                                        shareButton.setCallbackData("share");
+                                        // shareButton.setCallbackData("share");
+                                        // shareRow.add(shareButton);
+                                        // inlineButtons.add(shareRow);
+                                        shareButton.setSwitchInlineQuery(giveawayMessage);
                                         shareRow.add(shareButton);
                                         inlineButtons.add(shareRow);
 
@@ -919,36 +945,6 @@ public class Bot extends TelegramLongPollingBot {
                                 storeText(1L, sm.getText());
                                 sm.setChatId(msg.getChatId());
 
-
-
-                                //Handle the share button callback
-//                                if (update.hasCallbackQuery()) {
-//                                    CallbackQuery callbackQuery = update.getCallbackQuery();
-//                                    String callbackData = callbackQuery.getData();
-//                                    if (callbackData.equals("share")) {
-//                                        // Replace CHANNEL_USERNAME with the actual username or chat ID of your channel
-//
-//                                        Long targetChatId = -1001954778447L; // Replace with the actual chat ID
-//                                        Integer messageIdToForward = msg.getMessageId();
-//
-//                                        ForwardMessage forwardMessage = new ForwardMessage();
-//                                        //forwardMessage.setChatId(targetChatId);
-//                                        forwardMessage.setChatId(msg.getForwardFromMessageId().longValue());
-//                                        forwardMessage.setFromChatId(update.getMessage().getChat().getId()); // Replace with the actual source chat ID
-//                                        forwardMessage.setMessageId(messageIdToForward);
-//                                        // Forward the message to the channel
-//                                        try {
-//                                            // Execute the forward operation
-//                                            Message forwardedMessage = execute(forwardMessage);
-//
-//                                            // Handle the forwarded message as needed
-//                                            System.out.println("Message forwarded successfully. Forwarded message ID: " + forwardedMessage.getMessageId());
-//                                        } catch (TelegramApiException e) {
-//                                            // Handle any exceptions
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
-//                                }
                                 try {
                                     execute(sm);
                                 } catch (TelegramApiException e) {
