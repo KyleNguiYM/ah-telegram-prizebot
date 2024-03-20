@@ -123,10 +123,10 @@ public class Bot extends TelegramLongPollingBot {
         return new ArrayList<>(giveawayMediaMap.entrySet());
     }
 
-    private InlineKeyboardMarkup createInlineKeyboard(String id) {
+    private InlineKeyboardMarkup createInlineKeyboard(long id) {
 
         SendMessage sm = new SendMessage();
-        sm.setChatId(String.valueOf(id));
+        sm.setChatId(id);
         sm.setText(giveawayMessage);
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -287,7 +287,7 @@ public class Bot extends TelegramLongPollingBot {
                 //forwardGiveawayMessage(update);
                 var id = user.getId();
                 SendMessage sm = new SendMessage();
-                sm.setChatId(id.toString());
+                sm.setChatId(id);
                 sm.setText("You've share profile");
                 sm.setReplyMarkup(createInlineKeyboard());
                 List<Map.Entry<Long, List<String>>> allData = getAllDataFromMap();
