@@ -289,7 +289,6 @@ public class Bot extends TelegramLongPollingBot {
                 SendMessage sm = new SendMessage();
                 sm.setChatId(id);
                 sm.setText("You've share profile");
-                sm.setReplyMarkup(createInlineKeyboard());
                 List<Map.Entry<Long, List<String>>> allData = getAllDataFromMap();
                 StringBuilder messageText = new StringBuilder("Giveaway:\n");
 //                int i = 1;
