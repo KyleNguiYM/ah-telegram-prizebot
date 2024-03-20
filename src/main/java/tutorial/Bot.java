@@ -123,24 +123,24 @@ public class Bot extends TelegramLongPollingBot {
         return new ArrayList<>(giveawayMediaMap.entrySet());
     }
 
-    private InlineKeyboardMarkup createInlineKeyboard(long id) {
+    // private InlineKeyboardMarkup createInlineKeyboard(String id) {
 
-        SendMessage sm = new SendMessage();
-        sm.setChatId(id);
-        sm.setText(giveawayMessage);
+    //     SendMessage sm = new SendMessage();
+    //     sm.setChatId(String.valueOf(id));
+    //     sm.setText(giveawayMessage);
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton shareButton = new InlineKeyboardButton();
-        shareButton.setText("Share Giveaways");
-        shareButton.setSwitchInlineQuery(giveawayMessage);
+    //     InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+    //     InlineKeyboardButton shareButton = new InlineKeyboardButton();
+    //     shareButton.setText("Share Giveaways");
+    //     shareButton.setSwitchInlineQuery(giveawayMessage);
 
-        List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
-        keyboardButtonsRow.add(shareButton);
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(keyboardButtonsRow);
-        inlineKeyboardMarkup.setKeyboard(rowList);
-        return inlineKeyboardMarkup;
-    }
+    //     List<InlineKeyboardButton> keyboardButtonsRow = new ArrayList<>();
+    //     keyboardButtonsRow.add(shareButton);
+    //     List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+    //     rowList.add(keyboardButtonsRow);
+    //     inlineKeyboardMarkup.setKeyboard(rowList);
+    //     return inlineKeyboardMarkup;
+    // }
     
     List <String> giveawayMemberList = new ArrayList<>();
     @Override
