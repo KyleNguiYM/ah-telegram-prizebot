@@ -104,6 +104,8 @@ public class Bot extends TelegramLongPollingBot {
     private Map<String, GiveawayInfo> giveawaysMap = new HashMap<>();
     private Map<Long, List<String>> userGiveawaysMap = new HashMap<>();
     Map<String, List<String>> userGiveawaysMemberMap = new HashMap<>();
+    Map<Long, List<Integer>> participantsCountMap = new HashMap<>();
+    Map<Long, List<Integer>> winnerCountMap = new HashMap<>();
     public void storeText(long id, String text) {
         List<String> texts = new ArrayList<>();
         texts.add(text);
@@ -114,13 +116,30 @@ public class Bot extends TelegramLongPollingBot {
         media.add(file_id);
         giveawayMediaMap.put(id, media.toString());
     }
-
+    public void storeParticipants(long id, Integer count) {
+        List<Integer> partCount = new ArrayList<>();
+        partCount.add(count);
+        participantsCountMap.put(id, partCount);
+    }
+    public void storeWinners(long id, Integer count) {
+        List<Integer> winCount = new ArrayList<>();
+        winCount.add(count);
+        winnerCountMap.put(id, winCount);
+    }
+    
     public List<Map.Entry<Long, List<String>>> getAllDataFromMap() {
         return new ArrayList<>(userGiveawaysMap.entrySet());
     }
 
     public List<Map.Entry<Long, String>> getMediaFromMap() {
         return new ArrayList<>(giveawayMediaMap.entrySet());
+    }
+
+    public List<Map.Entry<Long, List<Integer>>> getPartsFromMap() {
+        return new ArrayList<>(participantsCountMap.entrySet());
+    }
+    public List<Map.Entry<Long, List<Integer>>> getWinnerFromMap() {
+        return new ArrayList<>(winnerCountMap.entrySet());
     }
 
     // private InlineKeyboardMarkup createInlineKeyboard(String id) {
@@ -1010,12 +1029,16 @@ public class Bot extends TelegramLongPollingBot {
 //    }
 
     // Method to randomly select a subscribed user in a Telegram channel
-    private void conductRaffle(Update update) {
-        update = new Update();
-        CallbackQuery callbackQuery = update.getCallbackQuery();
-        long groupId = callbackQuery.getMessage().getChatId();
+    private void conductRaffle(long groupId) {
+        
         // Retrieve the number of participants
-        int participants = giveawayParticipantsMap.getOrDefault(groupId, 1);
+        List<Map.Entry<Long, List<Integer>>> participantsC = getPartsFromMap();
+        List<Map.Entry<Long, List<Integer>>> winnerC = getWinnerFromMap();
+        int participants = 0;
+        //int participants = giveawayParticipantsMap.getOrDefault(groupId, 1);
+        for (Map.Entry<Long, List<Integer>> p_entry : participantsC) {
+            participants = p_entry.getValue().size();
+        }
 
          //Check if there are sufficient participants for the raffle
         if (participants <= 0) {
@@ -1033,7 +1056,11 @@ public class Bot extends TelegramLongPollingBot {
         }
 
         // Retrieve the number of winners
-        int winnersCount = giveawayWinnersMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
+        int winnersCount = 0;
+        //int winnersCount = giveawayWinnersMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
+        for (Map.Entry<Long, List<Integer>> w_entry : winnerC) {
+            winnersCount = w_entry.getValue().size();
+        }
 
         // Create a list to store the usernames of the winners
         List<String> winners = new ArrayList<>();
