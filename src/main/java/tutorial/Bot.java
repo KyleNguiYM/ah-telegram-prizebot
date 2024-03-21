@@ -1036,31 +1036,28 @@ public class Bot extends TelegramLongPollingBot {
         List<Map.Entry<Long, List<Integer>>> winnerC = getWinnerFromMap();
         int participants = 0;
         //int participants = giveawayParticipantsMap.getOrDefault(groupId, 1);
+        
         for (Map.Entry<Long, List<Integer>> p_entry : participantsC) {
-            participants = p_entry.getValue().size();
-        }
-
-         //Check if there are sufficient participants for the raffle
-        if (participants <= 0) {
-            // Handle the case when there are no participants or invalid number of participants
-            SendMessage message = new SendMessage();
-            message.setChatId(groupId);
-            //message.setText("There are no participants for the raffle or the number of participants is invalid.");
-            message.setText("There are no regular group members eligible for the raffle. Please ensure that there are non-administrator members in the group to participate.");
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
+            participants = p_entry.getKey().intValue();
+            //Check if there are sufficient participants for the raffle
+            if (participants == 0) {
+                // Handle the case when there are no participants or invalid number of participants
+                SendMessage message = new SendMessage();
+                message.setChatId(groupId);
+                message.setText("There are no participants for the raffle or the number of participants is invalid.");
+                //message.setText("There are no regular group members eligible for the raffle. Please ensure that there are non-administrator members in the group to participate.");
+                try {
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+                return; // Exit the method
             }
-            return; // Exit the method
         }
 
         // Retrieve the number of winners
         int winnersCount = 0;
         //int winnersCount = giveawayWinnersMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
-        for (Map.Entry<Long, List<Integer>> w_entry : winnerC) {
-            winnersCount = w_entry.getValue().size();
-        }
 
         // Create a list to store the usernames of the winners
         List<String> winners = new ArrayList<>();
@@ -1092,12 +1089,16 @@ public class Bot extends TelegramLongPollingBot {
 
         // Notify the selected winner
         message.setChatId(groupId);
-        if(!giveawayMemberList.isEmpty() && giveawayMemberList.size() > winnersCount){
-            raffleCount++;
-            message.setText ("\uD83C\uDF89 Congratulations to " + winner + " for winning the raffle!\n"
-                    + raffleCount+"/"+winnersCount);
-        }else {
-            message.setText("That is enough participants!");
+        for (Map.Entry<Long, List<Integer>> w_entry : winnerC) {
+            winnersCount = w_entry.getValue().size();
+            if (!giveawayMemberList.isEmpty() && giveawayMemberList.size() >= winnersCount) {
+                raffleCount++;
+                message.setText("\uD83C\uDF89 Congratulations to " + winner + " for winning the raffle!\n"
+                        + raffleCount + "/" + winnersCount);
+            } else {
+                message.setText("That is enough participants!");
+            }
+
         }
 
         // Retrieve the username of the member at the random index
