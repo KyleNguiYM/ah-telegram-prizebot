@@ -1090,7 +1090,7 @@ public class Bot extends TelegramLongPollingBot {
         // Notify the selected winner
         message.setChatId(groupId);
         for (Map.Entry<Long, List<Integer>> w_entry : winnerC) {
-            winnersCount = w_entry.getValue().size();
+            winnersCount = w_entry.getValue().get(0);
             if (!giveawayMemberList.isEmpty() && giveawayMemberList.size() >= winnersCount) {
                 raffleCount++;
                 message.setText("\uD83C\uDF89 Congratulations to " + winner + " for winning the raffle!\n"
