@@ -1010,9 +1010,12 @@ public class Bot extends TelegramLongPollingBot {
 //    }
 
     // Method to randomly select a subscribed user in a Telegram channel
-    private void conductRaffle(long groupId) {
+    private void conductRaffle(Update update) {
+        update = new Update();
+        CallbackQuery callbackQuery = update.getCallbackQuery();
+        long groupId = callbackQuery.getMessage().getChatId();
         // Retrieve the number of participants
-        int participants = giveawayParticipantsMap.get(groupId);
+        int participants = giveawayParticipantsMap.getOrDefault(groupId, 1);
 
          //Check if there are sufficient participants for the raffle
         if (participants <= 0) {
@@ -1030,7 +1033,7 @@ public class Bot extends TelegramLongPollingBot {
         }
 
         // Retrieve the number of winners
-        int winnersCount = giveawayWinnersMap.get(groupId); // Default to 1 winner if not specified
+        int winnersCount = giveawayWinnersMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
 
         // Create a list to store the usernames of the winners
         List<String> winners = new ArrayList<>();
