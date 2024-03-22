@@ -632,7 +632,7 @@ public class Bot extends TelegramLongPollingBot {
                     break;
                     case "/raffle":{
                         // Call conductRaffle function to get the list of winners
-                        long groupId = update.getMessage().getChat().getId();
+                        long groupId = id;
                         conductRaffle(groupId);
                     }
                     break;
