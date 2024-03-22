@@ -104,6 +104,8 @@ public class Bot extends TelegramLongPollingBot {
     private Map<String, GiveawayInfo> giveawaysMap = new HashMap<>();
     private Map<Long, List<String>> userGiveawaysMap = new HashMap<>();
     Map<String, List<String>> userGiveawaysMemberMap = new HashMap<>();
+    Map<Long, Integer> partCountMap = new HashMap<>();
+    Map<Long, Integer> winCountMap = new HashMap<>();
     public void storeText(long id, String text) {
         List<String> texts = new ArrayList<>();
         texts.add(text);
@@ -144,9 +146,6 @@ public class Bot extends TelegramLongPollingBot {
     
     List <String> giveawayMemberList = new ArrayList<>();
 
-    int partCount;
-    int winCount;
-    
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasCallbackQuery()) {
@@ -225,7 +224,7 @@ public class Bot extends TelegramLongPollingBot {
                 System.out.println("User " + firstname + " ("+ username + ") clicked join button");
 
                 response2.setChatId(chatId);
-                response2.setText("Members joined (" + giveawayMemberList.size() + "/" + giveawayParticipantsMap.get(chatId) +
+                response2.setText("Members joined (" + giveawayMemberList.size() + "/" + partCountMap.get(chatId) +
                         "):\n" + String.join("\n", giveawayMemberList)); // Join the list elements with newline separator
 
                 try {
@@ -742,7 +741,7 @@ public class Bot extends TelegramLongPollingBot {
                             case SETUP_PARTICIPANTS: {
                                 if (isValidNumber(txt)) {
                                     int participants = Integer.parseInt(txt);
-                                    partCount = participants;
+                                    partCountMap.put(chatId, participants);
                                     giveawayParticipantsMap.put(chatId, participants);
                                     giveawayCreationState.put(chatId, GiveawayStep.SETUP_WINNERS);
                                     SendMessage sm = new SendMessage();
@@ -769,7 +768,7 @@ public class Bot extends TelegramLongPollingBot {
                             case SETUP_WINNERS:
                                 if (isValidNumber(txt)) {
                                     int winners = Integer.parseInt(txt);
-                                    winCount = winners;
+                                    winCountMap.put(chatId, winners);
                                     giveawayWinnersMap.put(chatId, winners);
                                     giveawayCreationState.put(chatId, GiveawayStep.SETUP_DATE);
                                     SendMessage sm = new SendMessage();
@@ -1018,7 +1017,7 @@ public class Bot extends TelegramLongPollingBot {
     // Method to randomly select a subscribed user in a Telegram channel
     private void conductRaffle(long groupId) {
         // Retrieve the number of participants
-        int participants = giveawayParticipantsMap.getOrDefault(groupId, 1);
+        int participants = partCountMap.getOrDefault(groupId, 1);
 
          //Check if there are sufficient participants for the raffle
         if (participants <= 0) {
@@ -1036,7 +1035,7 @@ public class Bot extends TelegramLongPollingBot {
         }
 
         // Retrieve the number of winners
-        int winnersCount = giveawayWinnersMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
+        int winnersCount = winCountMap.getOrDefault(groupId, 1); // Default to 1 winner if not specified
 
         // Create a list to store the usernames of the winners
         List<String> winners = new ArrayList<>();
@@ -1068,7 +1067,7 @@ public class Bot extends TelegramLongPollingBot {
 
         // Notify the selected winner
         message.setChatId(groupId);
-        if(!giveawayMemberList.isEmpty() && giveawayMemberList.size() >1){
+        if(!giveawayMemberList.isEmpty() && giveawayMemberList.size() >= winnersCount){
             raffleCount++;
             message.setText ("\uD83C\uDF89 Congratulations to " + winner + " for winning the raffle!\n"
                     + raffleCount+"/"+winnersCount);
